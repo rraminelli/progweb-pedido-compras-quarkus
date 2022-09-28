@@ -1,18 +1,17 @@
 package br.com.ada.bancobrasil.pedidocompras.service.impl;
 
+import br.com.ada.bancobrasil.pedidocompras.dto.ProdutoListDto;
 import br.com.ada.bancobrasil.pedidocompras.entity.Produto;
 import br.com.ada.bancobrasil.pedidocompras.repository.ProdutoRepository;
 import br.com.ada.bancobrasil.pedidocompras.service.ProdutoService;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 import java.util.List;
 
-@Service
+@ApplicationScoped
 public class ProdutoServiceImpl implements ProdutoService {
 
     final ProdutoRepository produtoRepository;
@@ -24,13 +23,16 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional
     public Produto save(Produto produto) {
-        return produtoRepository.save(produto);
+        produtoRepository.persist(produto);
+        return produto;
     }
+
+
 
     @Override
     @Transactional
     public void save(List<Produto> produtos) {
-        produtoRepository.saveAll(produtos);
+        produtoRepository.persist(produtos);
     }
 
     @Override
@@ -40,40 +42,38 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
     public Produto getById(Long id) {
-        return produtoRepository.findById(id).get();
+        return produtoRepository.findByIdOptional(id).get();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Produto> findAll(String filter, Pageable pageable) {
+    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
+    public ProdutoListDto findAll(String filter, int page, int size) {
 
-        /*return produtoRepository.findByNomeContainingOrDescricaoContaining
-                (filter, filter, pageable);*/
+        PanacheQuery<Produto> produtosList = produtoRepository.findByNomeOrDescricao(filter, Page.of(page, size));
 
-        Produto produto = new Produto();
-        produto.setNome(filter);
-        produto.setDescricao(filter);
-
-        final ExampleMatcher exampleMatcher =
-                ExampleMatcher
-                        .matchingAny()
-                        .withIgnoreCase()
-                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-
-        Example<Produto> produtoExample = Example.of(produto, exampleMatcher);
-
-        return produtoRepository.findAll(produtoExample, pageable);
-
-        //return produtoRepository.findByFilterNative(filter.toUpperCase(), pageable);
+        return ProdutoListDto.builder()
+                .list(produtosList.list())
+                .total((int)produtosList.count())
+                .size(produtosList.list().size())
+                .page(page)
+                .build();
 
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
     public boolean exists() {
         return produtoRepository.count() > 0;
+    }
+
+    @Override
+    @Transactional
+    public void updateEstoque(Long idProduto, Integer qtdeEstoque) {
+        Produto produto = produtoRepository.findById(idProduto);
+        produto.setEstoque(qtdeEstoque);
+        produtoRepository.persist(produto);
     }
 
 }

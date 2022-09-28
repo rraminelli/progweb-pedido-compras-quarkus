@@ -4,45 +4,45 @@ import br.com.ada.bancobrasil.pedidocompras.entity.Usuario;
 import br.com.ada.bancobrasil.pedidocompras.entity.enums.PerfilEnum;
 import br.com.ada.bancobrasil.pedidocompras.repository.UsuarioRepository;
 import br.com.ada.bancobrasil.pedidocompras.service.UsuarioService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
-@Service
+@ApplicationScoped
 public class UsuarioServiceImpl implements UsuarioService {
 
     final UsuarioRepository usuarioRepository;
-    final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
+    @Transactional
     public Usuario save(Usuario usuario) {
         usuario.setPerfil(PerfilEnum.CLIENTE);
 
         if (Objects.isNull(usuario.getId())) {
-            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            //usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
 
-        return usuarioRepository.save(usuario);
+        usuarioRepository.persist(usuario);
+
+        return usuario;
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
     public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+        return usuarioRepository.findAll().list();
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
     public Usuario getById(Long userId) {
-        return usuarioRepository.findById(userId).get();
+        return usuarioRepository.findById(userId);
     }
 
 }

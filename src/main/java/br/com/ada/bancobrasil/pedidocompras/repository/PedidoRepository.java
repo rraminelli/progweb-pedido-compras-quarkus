@@ -1,9 +1,12 @@
 package br.com.ada.bancobrasil.pedidocompras.repository;
 
 import br.com.ada.bancobrasil.pedidocompras.entity.Pedido;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
-@Repository
-public interface PedidoRepository extends JpaRepository<Pedido, Long> {
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class PedidoRepository implements PanacheRepositoryBase<Pedido, Long> {
+
 }

@@ -1,26 +1,19 @@
 package br.com.ada.bancobrasil.pedidocompras.repository;
 
 import br.com.ada.bancobrasil.pedidocompras.entity.Produto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.quarkus.panache.common.Page;
 
-@Repository
-public interface ProdutoRepository extends JpaRepository<Produto, Long> {
+import javax.enterprise.context.ApplicationScoped;
 
-    Page<Produto> findByNomeContainingOrDescricaoContaining
-            (String nome, String descricao, Pageable pageable);
+@ApplicationScoped
+public class ProdutoRepository implements PanacheRepositoryBase<Produto, Long> {
 
-    @Query("select p from Produto p where upper(p.nome) like %:filter% or upper(p.descricao) like %:filter% ")
-    Page<Produto> findByFilter(@Param("filter") String filter, Pageable pageable);
+    public PanacheQuery<Produto> findByNomeOrDescricao(String filtro, Page page) {
+        return find("nome like ?1 or descricao like ?2", "%" + filtro + "%", "%" + filtro + "%").page(page);
+    }
 
-    @Query(
-            value = "select * from produto p where upper(p.nome) like %:filter% or upper(p.descricao) like %:filter% ",
-            nativeQuery = true
-    )
-    Page<Produto> findByFilterNative(@Param("filter") String filter, Pageable pageable);
 
 }

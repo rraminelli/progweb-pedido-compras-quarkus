@@ -5,21 +5,21 @@ import br.com.ada.bancobrasil.pedidocompras.entity.Pedido;
 import br.com.ada.bancobrasil.pedidocompras.entity.enums.StatusPedidoEnum;
 import br.com.ada.bancobrasil.pedidocompras.service.SendEmailService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-@Service
-@Order(40)
+@ApplicationScoped
+@Priority(20)
 public class EnviarEmailDepVendas implements ValidarPedido {
 
     final String emailDepVendas;
     final SendEmailService sendEmailService;
 
-    public EnviarEmailDepVendas(@Value("${app.email.vendas}") String emailDepVendas, SendEmailService sendEmailService) {
+    public EnviarEmailDepVendas(@ConfigProperty(name = "app.email.vendas") String emailDepVendas, SendEmailService sendEmailService) {
         this.emailDepVendas = emailDepVendas;
         this.sendEmailService = sendEmailService;
     }

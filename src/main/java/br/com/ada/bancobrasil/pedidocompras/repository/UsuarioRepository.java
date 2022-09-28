@@ -1,13 +1,13 @@
 package br.com.ada.bancobrasil.pedidocompras.repository;
 
 import br.com.ada.bancobrasil.pedidocompras.entity.Usuario;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
-import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 
-@Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+@ApplicationScoped
+public class UsuarioRepository implements PanacheRepositoryBase<Usuario, Long> {
 
-    Optional<Usuario> findByEmail(String email);
+
 }

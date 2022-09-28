@@ -5,12 +5,14 @@ import br.com.ada.bancobrasil.pedidocompras.entity.Produto;
 import br.com.ada.bancobrasil.pedidocompras.entity.enums.StatusPedidoEnum;
 import br.com.ada.bancobrasil.pedidocompras.service.ProdutoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
+
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 
 @Slf4j
-@Service
-@Order(20)
+@ApplicationScoped
+@Priority(40)
 public class RealizarBaixaNoEstoque implements ValidarPedido {
 
     final ProdutoService produtoService;
@@ -19,6 +21,8 @@ public class RealizarBaixaNoEstoque implements ValidarPedido {
         this.produtoService = produtoService;
     }
 
+
+    @Transactional
     public void validar(Pedido pedido) {
         log.info("RealizarBaixaNoEstoque");
 
@@ -27,9 +31,9 @@ public class RealizarBaixaNoEstoque implements ValidarPedido {
         }
 
         pedido.getItens().forEach(item -> {
-            final Produto produto = produtoService.getById(item.getProduto().getId());
-            produto.setEstoque(produto.getEstoque() - item.getQuantidade());
-            produtoService.save(produto);
+            log.info("Produto: {}", item.getProduto().getId());
+            item.getProduto().setEstoque(item.getProduto().getEstoque() - item.getQuantidade());
+            produtoService.updateEstoque(item.getProduto().getId(), item.getProduto().getEstoque());
         });
 
     }

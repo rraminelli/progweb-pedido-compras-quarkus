@@ -3,32 +3,23 @@ package br.com.ada.bancobrasil.pedidocompras.service.impl;
 import br.com.ada.bancobrasil.pedidocompras.dto.SendEmailDto;
 import br.com.ada.bancobrasil.pedidocompras.service.SendEmailService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+
+import javax.enterprise.context.ApplicationScoped;
 
 @Slf4j
-@Service
+@ApplicationScoped
 public class SendEmailServiceImpl implements SendEmailService {
 
-    final JavaMailSender javaMailSender;
-
-    public SendEmailServiceImpl(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
-
-    @Async
     @Override
     public void send(SendEmailDto sendEmailDto) {
 
         log.info("INICIO - Envio email - " + sendEmailDto);
 
-        final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        /*final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(sendEmailDto.getPara());
         simpleMailMessage.setSubject(sendEmailDto.getAssunto());
         simpleMailMessage.setText(sendEmailDto.getMensagem());
-        javaMailSender.send(simpleMailMessage);
+        javaMailSender.send(simpleMailMessage);*/
 
         log.info("FIM - Envio email - " + sendEmailDto);
 

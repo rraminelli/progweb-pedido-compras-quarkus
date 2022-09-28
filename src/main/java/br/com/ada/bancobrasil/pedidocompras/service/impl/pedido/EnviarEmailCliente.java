@@ -6,14 +6,14 @@ import br.com.ada.bancobrasil.pedidocompras.entity.Usuario;
 import br.com.ada.bancobrasil.pedidocompras.entity.enums.StatusPedidoEnum;
 import br.com.ada.bancobrasil.pedidocompras.service.SendEmailService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
 
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-@Service
-@Order(30)
+@ApplicationScoped
+@Priority(30)
 public class EnviarEmailCliente implements ValidarPedido {
 
     final SendEmailService sendEmailService;

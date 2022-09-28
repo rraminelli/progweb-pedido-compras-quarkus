@@ -1,4 +1,4 @@
-package br.com.ada.bancobrasil.pedidocompras.controller;
+package br.com.ada.bancobrasil.pedidocompras.resource;
 
 import br.com.ada.bancobrasil.pedidocompras.entity.Usuario;
 import br.com.ada.bancobrasil.pedidocompras.service.UsuarioService;

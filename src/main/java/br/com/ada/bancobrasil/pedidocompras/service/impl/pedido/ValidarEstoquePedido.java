@@ -5,12 +5,14 @@ import br.com.ada.bancobrasil.pedidocompras.entity.Produto;
 import br.com.ada.bancobrasil.pedidocompras.entity.enums.StatusPedidoEnum;
 import br.com.ada.bancobrasil.pedidocompras.service.ProdutoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
 
-@Service
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
+
+@ApplicationScoped
 @Slf4j
-@Order(10)
+@Priority(50)
 public class ValidarEstoquePedido implements ValidarPedido {
 
     final ProdutoService produtoService;
@@ -19,6 +21,7 @@ public class ValidarEstoquePedido implements ValidarPedido {
         this.produtoService = produtoService;
     }
 
+    @Transactional
     public void validar(Pedido pedido) {
         log.info("ValidarEstoquePedido");
 

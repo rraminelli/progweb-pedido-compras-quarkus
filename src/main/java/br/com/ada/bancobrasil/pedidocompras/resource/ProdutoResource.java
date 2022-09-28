@@ -1,4 +1,4 @@
-package br.com.ada.bancobrasil.pedidocompras.controller;
+package br.com.ada.bancobrasil.pedidocompras.resource;
 
 import br.com.ada.bancobrasil.pedidocompras.entity.Produto;
 import br.com.ada.bancobrasil.pedidocompras.service.ProdutoService;
@@ -19,12 +19,13 @@ public class ProdutoResource {
         this.produtoService = produtoService;
     }
 
-    //@GET
+    @GET
     //@ApiResponse(description = "Lista de produtos, filtro por nome e descricao")
-    /*public Response findAll(@RequestParam(value = "filter", required = false) String filter,
-                                                 @ParameterObject @PageableDefault(size = 20, page = 0) Pageable pageable) {
-        return ResponseEntity.ok(produtoService.findAll(filter, pageable));
-    }*/
+    public Response findAll(@QueryParam(value = "filter") String filter,
+                            @QueryParam(value = "page") int page,
+                            @QueryParam(value = "size") int size) {
+        return Response.ok(produtoService.findAll(filter, page, size)).build();
+    }
 
     //@PreAuthorize("hasAnyRole('ADMIN')")
     @POST
