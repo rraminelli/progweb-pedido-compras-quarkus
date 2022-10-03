@@ -3,6 +3,7 @@ package br.com.ada.bancobrasil.pedidocompras.service.impl;
 import br.com.ada.bancobrasil.pedidocompras.entity.Usuario;
 import br.com.ada.bancobrasil.pedidocompras.entity.enums.PerfilEnum;
 import br.com.ada.bancobrasil.pedidocompras.repository.UsuarioRepository;
+import br.com.ada.bancobrasil.pedidocompras.security.PasswordUtils;
 import br.com.ada.bancobrasil.pedidocompras.service.UsuarioService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,7 +26,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setPerfil(PerfilEnum.CLIENTE);
 
         if (Objects.isNull(usuario.getId())) {
-            //usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            usuario.setSenha(PasswordUtils.encode(usuario.getSenha()));
         }
 
         usuarioRepository.persist(usuario);
@@ -43,6 +44,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
     public Usuario getById(Long userId) {
         return usuarioRepository.findById(userId);
+    }
+
+    @Override
+    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
+    public Usuario findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 
 }

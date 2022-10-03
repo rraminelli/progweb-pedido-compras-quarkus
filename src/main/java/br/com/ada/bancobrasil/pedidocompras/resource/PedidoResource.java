@@ -3,6 +3,7 @@ package br.com.ada.bancobrasil.pedidocompras.resource;
 import br.com.ada.bancobrasil.pedidocompras.dto.RealizarPedidoDto;
 import br.com.ada.bancobrasil.pedidocompras.service.PedidoService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,7 +22,7 @@ public class PedidoResource {
         this.pedidoService = pedidoService;
     }
 
-    //@PreAuthorize("hasAnyRole('CLIENTE')")
+    @RolesAllowed("CLIENTE")
     @POST
     public Response realizarPedido(RealizarPedidoDto realizarPedidoDto) {
         return Response.ok(pedidoService.realizarPedido(realizarPedidoDto)).build();

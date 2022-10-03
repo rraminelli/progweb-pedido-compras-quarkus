@@ -9,5 +9,8 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class UsuarioRepository implements PanacheRepositoryBase<Usuario, Long> {
 
+    public Usuario findByEmail(String email) {
+        return find("email", email).firstResult();
+    }
 
 }

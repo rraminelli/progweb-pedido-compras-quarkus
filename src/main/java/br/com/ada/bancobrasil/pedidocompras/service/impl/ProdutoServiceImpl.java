@@ -63,7 +63,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Override
-    @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
+    @Transactional
     public boolean exists() {
         return produtoRepository.count() > 0;
     }

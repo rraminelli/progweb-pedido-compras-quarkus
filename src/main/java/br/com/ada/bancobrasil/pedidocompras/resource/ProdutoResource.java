@@ -2,7 +2,9 @@ package br.com.ada.bancobrasil.pedidocompras.resource;
 
 import br.com.ada.bancobrasil.pedidocompras.entity.Produto;
 import br.com.ada.bancobrasil.pedidocompras.service.ProdutoService;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -20,14 +22,14 @@ public class ProdutoResource {
     }
 
     @GET
-    //@ApiResponse(description = "Lista de produtos, filtro por nome e descricao")
+    @APIResponse(description = "Lista de produtos, filtro por nome e descricao")
     public Response findAll(@QueryParam(value = "filter") String filter,
                             @QueryParam(value = "page") int page,
                             @QueryParam(value = "size") int size) {
         return Response.ok(produtoService.findAll(filter, page, size)).build();
     }
 
-    //@PreAuthorize("hasAnyRole('ADMIN')")
+    @RolesAllowed("ADMIN")
     @POST
     public Response save(@Valid Produto produto) {
         return Response.ok(produtoService.save(produto)).build();
@@ -41,7 +43,7 @@ public class ProdutoResource {
     }
 
     //http://server:8080/produtos/1
-    //@PreAuthorize("hasAnyRole('ADMIN')")
+    @RolesAllowed("ADMIN")
     @DELETE
     @Path("/{id}")
     public void delete(@PathParam("id") Long id) {
